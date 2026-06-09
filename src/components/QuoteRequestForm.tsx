@@ -80,7 +80,9 @@ export default function QuoteRequestForm() {
       }
 
       // 3. Create print order in database
-      const orderId = `ORD-${Math.floor(1000 + Math.random() * 9000)}`;
+      const orderId = isMockMode
+        ? `ORD-${Math.floor(1000 + Math.random() * 9000)}`
+        : crypto.randomUUID();
       
       if (isMockMode) {
         // Save to localstorage for mock synchronization
