@@ -1,0 +1,38 @@
+name: Deploy to Netlify
+
+on:
+  push:
+    branches:
+      - main # O el nombre de tu rama principal (ej: master)
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Descarga el código del repositorio
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Instala Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22 # Usa la misma versión de Node.js que tengas configurada
+
+      # 3. Instala las dependencias
+      - name: Install dependencies
+        run: npm ci
+
+      # 4. Compila el sitio Astro
+      - name: Build site
+        run: npm run build
+
+      # 5. Despliega en Netlify usando la CLI oficial
+      - name: Deploy to Netlify
+        uses: netlify/actions/cli@master
+        with:
+          args: deploy --prod --dir=dist
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
