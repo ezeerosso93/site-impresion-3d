@@ -1,0 +1,83 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/Navbar.astro';
+import Footer from '../../components/Footer.astro';
+import ProductGrid from '../../components/ProductGrid';
+import { supabase } from '../../lib/supabase';
+
+// Fetch products from database
+let products = [];
+try {
+  const { data, error } = await supabase
+    .from('productos_3d')
+    .select('*')
+    .order('created_at', { ascending: false });
+  
+  if (data && data.length > 0) {
+    products = data;
+  }
+} catch (e) {
+  console.log("Supabase fetch failed, using fallback mock data.");
+}
+
+// Fallback if empty
+if (products.length === 0) {
+  products = [
+    {
+      id: 'prod3d-001',
+      nombre: 'Soporte de Auriculares Minimalista',
+      descripcion: 'Soporte de diseño moderno para auriculares gamer u oficina. Cuenta con base antideslizante y canal de cables.',
+      precio: 3500,
+      peso_estimado: 85,
+      tiempo_impresion: 240,
+      material_sugerido: 'PLA Rojo',
+      imagen_url: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400',
+      stock: 15,
+      destacado: true
+    },
+    {
+      id: 'prod3d-002',
+      nombre: 'Maceta Autorregante Hexagonal',
+      descripcion: 'Maceta inteligente con sistema de auto-riego impreso en PETG para máxima estanqueidad. Diseño geométrico elegante.',
+      precio: 4800,
+      peso_estimado: 120,
+      tiempo_impresion: 360,
+      material_sugerido: 'PETG Negro',
+      imagen_url: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400',
+      stock: 8,
+      destacado: true
+    },
+    {
+      id: 'prod3d-003',
+      nombre: 'Engranaje de Reducción Helicoidal',
+      descripcion: 'Repuesto mecánico impreso en ABS Gray de alta resistencia al impacto y temperatura.',
+      precio: 2100,
+      peso_estimado: 45,
+      tiempo_impresion: 120,
+      material_sugerido: 'ABS Gris',
+      imagen_url: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=400',
+      stock: 4,
+      destacado: false
+    }
+  ];
+}
+---
+
+<Layout title="Catálogo de Productos 3D | Vidriera Virtual">
+  <Navbar />
+
+  <main class="flex-1 py-16">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="border-b border-white/5 pb-10 mb-8">
+        <h1 class="font-outfit text-4xl font-extrabold tracking-tight text-white">Catálogo de Productos Impresos</h1>
+        <p class="mt-2 text-slate-400 text-sm max-w-2xl">
+          Explorá nuestra vidriera digital de modelos 3D listos para mandar a imprimir. Solicitalos en el material y color que más te guste.
+        </p>
+      </div>
+
+      <ProductGrid client:load initialProducts={products} />
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
