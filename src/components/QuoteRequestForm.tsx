@@ -113,7 +113,7 @@ export default function QuoteRequestForm() {
             id: orderId,
             cliente_nombre: nombre,
             archivo_url: archivoUrl,
-            material: material, // fallback textual material name
+            material_id: matData?.id || null,
             estado: 'pendiente',
             cliente_telefono: telefono,
             cliente_email: email,
